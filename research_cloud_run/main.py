@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 import os
+
+# Load environment variables from .env file
 load_dotenv()
 
 # Custom imports from src directory
@@ -9,7 +11,8 @@ from agents import summarizer_agent, researcher_agent, expert_curator_agent
 from llms import ChatOpenAI, ChatGoogleGenerativeAI
 from tasks import research_topic, select_top_information, summarizer_task
 
-
+# Initialize Flask application
+app = Flask(__name__)
 
 # Initialize LLM models
 llm_gpt_4o = ChatOpenAI(model="gpt-4o")
@@ -31,11 +34,11 @@ crew = Crew(
     memory=True
 )
 
-
 # Read API key from environment variable
 API_KEY = os.getenv('FUNC_API_KEY')
 
-def research_function(request):
+@app.route('/research', methods=['POST'])
+def research_function():
     data = request.get_json()
     api_key = request.headers.get('x-api-key')
 
@@ -49,3 +52,7 @@ def research_function(request):
     inputs = {"topic": topic}
     result = crew.kickoff(inputs=inputs)
     return jsonify(result)
+
+if __name__ == '__main__':
+    # Run the Flask app
+    app.run(host='0.0.0.0', port=8080)
