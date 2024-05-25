@@ -1,0 +1,8 @@
+crewai
+crewai_tools
+langchain_community
+google-search-results
+langchain-google-genai
+pillow
+python-dotenv
+flask>=1.0,<3.0
